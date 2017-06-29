@@ -7,7 +7,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import hello.Application;
+import app.Application;
 
 public class DateParser {
 
