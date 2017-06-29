@@ -47,4 +47,17 @@ public class RegionDAO {
             return true;
         }
     }
+
+    public String getParentForSlug(String origin) {
+        Region region = jdbcTemplate.queryForObject("SELECT * FROM region WHERE slug = ?",
+                new Object[] { origin },
+                new BeanPropertyRowMapper<>(Region.class));
+        return region.getParent();
+    }
+
+    public List<Region> getChildrenForSlug(String parent) {
+        return jdbcTemplate.query("SELECT * FROM region WHERE parent = ?",
+                new Object[] { parent },
+                new BeanPropertyRowMapper<>(Region.class));
+    }
 }

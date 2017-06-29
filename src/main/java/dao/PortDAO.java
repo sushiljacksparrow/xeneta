@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,5 +62,12 @@ public class PortDAO {
             ports.add(port.getCode());
         }
         return ports;
+    }
+
+    public String getSlugForPort(String code) {
+        Port port = jdbcTemplate.queryForObject("SELECT * FROM port WHERE code = ?",
+                new Object[] { code },
+                new BeanPropertyRowMapper<>(Port.class));
+        return port.getSlug();
     }
 }

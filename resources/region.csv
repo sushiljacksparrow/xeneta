@@ -1,5 +1,6 @@
-china_main,China Main,china_main
-northern_europe,Northern Europe,northern_europe
+ROOT,ROOT,ROOT
+china_main,China Main,ROOT
+northern_europe,Northern Europe,ROOT
 scandinavia,Scandinavia,northern_europe
 baltic,Baltic,northern_europe
 stockholm_area,Stockholm Area,scandinavia

@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import dao.CSVDataParser;
+import dao.ExchangeRateDAO;
 import dao.PortDAO;
 import dao.PriceDAO;
 import dao.RegionDAO;
@@ -47,6 +48,11 @@ public class Application implements CommandLineRunner {
     @Bean
     public PriceDAO getPriceDAO() {
         return new PriceDAO();
+    }
+    
+    @Bean
+    public ExchangeRateDAO getExchangeRateDAO() {
+        return new ExchangeRateDAO();
     }
 
     @Override
