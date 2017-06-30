@@ -15,11 +15,13 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import dao.DateParser;
@@ -58,6 +60,7 @@ public class RateController {
      *            - DEGG
      * @return List of average prices for each date. If there is no average price for a date then average price value is
      */
+    @ResponseStatus(code=HttpStatus.OK)
     @RequestMapping(value = "/rates", method = RequestMethod.GET, produces = "application/json")
     public List<PriceResponse> getDailyAverageRate(@RequestParam("date_from") final String dateFrom,
             @RequestParam("date_to") final String dateTo, @RequestParam("origin") final String origin,
@@ -68,6 +71,11 @@ public class RateController {
 
         LocalDate startLocalDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate endLocalDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        
+        if (endLocalDate.isBefore(startLocalDate)) {
+            throw new IllegalArgumentException(
+                    String.format("date_from %s can not be later than date_end", dateFrom, dateTo));
+        }
 
         List<String> originPorts = checkPortOrReturnAllPortsInRegion(origin);
         List<String> destinationPorts = checkPortOrReturnAllPortsInRegion(destination);
@@ -136,12 +144,14 @@ public class RateController {
         }
     }
 
-    private List<String> checkPortOrReturnAllPortsInRegion(String origin) {
+    private List<String> checkPortOrReturnAllPortsInRegion(String port) {
         List<String> ports = new ArrayList<>();
-        if (portDAO.isPort(origin)) {
-            ports.add(origin);
-        } else if (regionDAO.isSlug(origin)) {
-            ports.addAll(portDAO.getAllPortsForSlug(origin));
+        if (portDAO.isPort(port)) {
+            ports.add(port);
+        } else if (regionDAO.isSlug(port)) {
+            ports.addAll(portDAO.getAllPortsForSlug(port));
+        } else {
+           throw new IllegalArgumentException(String.format("%s is invalid", port)); 
         }
         return ports;
     }
